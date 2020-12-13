@@ -4,7 +4,7 @@ from __future__ import print_function
 import math
 import random
 import re
-import StringIO
+from io import StringIO
 import email.parser
 
 from email import encoders

@@ -65,7 +65,6 @@ import time
 import random
 import warnings
 
-from cStringIO import StringIO
 from email.header import Header
 
 from mailpile.i18n import gettext as _

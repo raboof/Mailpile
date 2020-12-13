@@ -2,8 +2,8 @@ from __future__ import print_function
 import io
 import json
 import os
-import ConfigParser
-from urllib import quote, unquote
+from configparser import ConfigParser
+from urllib.parse import quote, unquote
 
 from mailpile.i18n import gettext as _
 from mailpile.i18n import ngettext as _n
@@ -74,61 +74,6 @@ class InvalidKeyError(ValueError):
     pass
 
 
-class CommentedEscapedConfigParser(ConfigParser.RawConfigParser):
-    """
-    This is a ConfigParser that allows embedded comments and safely escapes
-    and encodes/decodes values that include funky characters.
-
-    >>> cfg = u'[config/sys: Stuff]\\ndebug = True ; Ignored comment'
-    >>> cecp = CommentedEscapedConfigParser()
-    >>> cecp.readfp(io.BytesIO(cfg.encode('utf-8')))
-    >>> cecp.get('config/sys: Stuff', 'debug') == 'True'
-    True
-
-    >>> cecp.items('config/sys: Stuff')
-    [(u'debug', u'True')]
-    """
-    NOT_UTF8 = '%C0'  # This byte is never valid at the start of an utf-8
-                      # string, so we use it to mark binary data.
-    SAFE = '!?: /#@<>[]()=-'
-
-    def set(self, section, key, value, comment):
-        key = unicode(key).encode('utf-8')
-        section = unicode(section).encode('utf-8')
-
-        if isinstance(value, unicode):
-            value = quote(value.encode('utf-8'), safe=self.SAFE)
-        elif isinstance(value, str):
-            quoted = quote(value, safe=self.SAFE)
-            if quoted != value:
-                value = self.NOT_UTF8 + quoted
-        else:
-            value = quote(unicode(value).encode('utf-8'), safe=self.SAFE)
-
-        if value.endswith(' '):
-            value = value[:-1] + '%20'
-        if comment:
-            pad = ' ' * (25 - len(key) - len(value)) + ' ; '
-            value = '%s%s%s' % (value, pad, comment)
-        return ConfigParser.RawConfigParser.set(self, section, key, value)
-
-    def _decode_value(self, value):
-        if value.startswith(self.NOT_UTF8):
-            return unquote(value[len(self.NOT_UTF8):])
-        else:
-            return unquote(value).decode('utf-8')
-
-    def get(self, section, key):
-        key = unicode(key).encode('utf-8')
-        section = unicode(section).encode('utf-8')
-        value = ConfigParser.RawConfigParser.get(self, section, key)
-        return self._decode_value(value)
-
-    def items(self, section):
-        return [(k.decode('utf-8'), self._decode_value(i)) for k, i
-                in ConfigParser.RawConfigParser.items(self, section)]
-
-
 def _MakeCheck(pcls, name, comment, rules, write_watcher):
     class Checker(pcls):
         _NAME = name
@@ -164,19 +109,18 @@ def RuledContainer(pcls):
             'gpgkeyid': validators.GPGKeyCheck,
             'hostname': validators.HostNameCheck,
             'int': int,
-            'long': long,
-            'multiline': unicode,
+            'multiline': str,
             'new file': validators.NewPathCheck,
             'new dir': validators.NewPathCheck,
             'new directory': validators.NewPathCheck,
             'path': validators.PathCheck,
-            str: unicode,
+            str: str,
             'slashslug': validators.SlashSlugCheck,
             'slug': validators.SlugCheck,
-            'str': unicode,
+            'str': str,
             'True': True, 'true': True,
-            'timestamp': long,
-            'unicode': unicode,
+            'timestamp': int,
+            'unicode': str,
             'url': validators.UrlCheck, # FIXME: check more than the scheme?
             'webroot': validators.WebRootCheck
         }
@@ -229,7 +173,7 @@ def RuledContainer(pcls):
                 return []
 
         def as_config(self, config=None, _type=None, _xtype=None):
-            config = config or CommentedEscapedConfigParser()
+            config = config or ConfigParser()
             section = self._name
             if self._comment:
                 section += ': %s' % self._comment
@@ -745,7 +689,7 @@ class ConfigDict(RuledContainer(dict)):
         >>> [l[1] for l in session.ui.log_buffer if 'bogus_var' in l[1]][0]
         u'Invalid (internal): section config/sys, ...
         """
-        parser = CommentedEscapedConfigParser()
+        parser = ConfigParser()
         parser.readfp(io.BytesIO(str(data)))
 
         def item_sorter(i):

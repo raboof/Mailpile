@@ -25,7 +25,7 @@ from __future__ import print_function
 import os
 import subprocess
 import sys
-import thread
+import _thread
 import threading
 
 import mailpile.platforms

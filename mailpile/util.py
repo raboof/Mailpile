@@ -20,8 +20,8 @@ import sys
 import tempfile
 import threading
 import time
-import StringIO
-import cStringIO
+from io import StringIO
+from io import BytesIO
 from distutils import spawn
 
 from mailpile.i18n import gettext as _
@@ -107,9 +107,9 @@ ATT_EXTS['media'] = (ATT_EXTS['audio'] + ATT_EXTS['font'] +
 
 B64C_STRIP = '\r\n='
 
-B64C_TRANSLATE = string.maketrans('/', '_')
+B64C_TRANSLATE = str.maketrans('/', '_', '')
 
-B64W_TRANSLATE = string.maketrans('/+', '_-')
+B64W_TRANSLATE = str.maketrans('/+', '_-', '')
 
 STRHASH_RE = re.compile('[^0-9a-z]+')
 
@@ -905,7 +905,7 @@ def play_nice_with_threads(sleep=True, weak=False, deadline=None):
     return delay
 
 
-class PeekableStringIO(StringIO.StringIO):
+class PeekableStringIO(StringIO):
     def peek(self, n):
         StringIO._complain_ifclosed(self.closed)
         if self.buflist:
@@ -965,7 +965,7 @@ def image_size(img_data, pure_python=False):
         if imgsize is not None:
             return imgsize.get_size(PeekableStringIO(img_data))
         if Image is not None and not pure_python:
-            return Image.open(cStringIO.StringIO(img_data)).size
+            return Image.open(BytesIO(img_data)).size
     except (ValueError, imgsize.UnknownSize):
         pass
     return None
@@ -991,7 +991,7 @@ def thumbnail(fileobj, output_fd, height=None, width=None):
 
     # Ensure the source image is either a file-like object or a StringIO
     if (not isinstance(fileobj, (file, StringIO.StringIO))):
-        fileobj = cStringIO.StringIO(fileobj)
+        fileobj = BytesIO(fileobj)
 
     image = Image.open(fileobj)
     fmt = image.format
@@ -1149,8 +1149,7 @@ def RunTimed(timeout, func, *args, **kwargs):
             exception.append((et, ev, etb))
     RunTimedThread(func.__name__, work, unique=unique).run_timed(timeout)
     if exception:
-        t, v, tb = exception[0]
-        raise t, v, tb
+        raise exception[0]
     return result[0]
 
 

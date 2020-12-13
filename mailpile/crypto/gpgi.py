@@ -5,7 +5,7 @@ import string
 import sys
 import time
 import re
-import StringIO
+from io import StringIO
 import tempfile
 import threading
 import traceback
