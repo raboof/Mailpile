@@ -94,7 +94,7 @@ class PluginManager(object):
 
     def __init__(self, plugin_name=None, builtin=False, deprecated=False,
                  config=None, session=None):
-        if builtin and isinstance(builtin, (str, unicode)):
+        if builtin and isinstance(builtin, str):
             builtin = os.path.basename(builtin)
             for ignore in ('.py', '.pyo', '.pyc'):
                 if builtin.endswith(ignore):
@@ -511,7 +511,7 @@ class PluginManager(object):
         path = '/'.join(args)
         for arg in args:
             dest = dest[arg][-1]
-        for rname, rule in rules.iteritems():
+        for rname, rule in rules.items():
             if rname in dest:
                 raise PluginError('Variable already exist: %s/%s' % (path, rname))
             else:

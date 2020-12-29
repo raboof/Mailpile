@@ -6,8 +6,8 @@ import random
 import socket
 import sys
 import time
-from urllib import urlencode
-from urllib2 import urlopen
+from urllib.parse import urlencode
+from urllib.request import urlopen
 from lxml import objectify
 
 import mailpile.auth
@@ -1153,7 +1153,7 @@ class SetupTestRoute(TestableWebbable):
     HTTP_CALLABLE = ('POST', )
     HTTP_POST_VARS = dict_merge(TestableWebbable.HTTP_POST_VARS,
                                 dict((k, v[0]) for k, v in
-                                     CONFIG_RULES['routes'][1].iteritems()),
+                                     CONFIG_RULES['routes'][1].items()),
                                 {'route_id': 'ID of existing route'})
     TEST_DATA = {}
 

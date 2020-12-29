@@ -15,7 +15,7 @@ import os
 import quopri
 import random
 import re
-import StringIO
+from io import StringIO
 import threading
 import traceback
 from email import encoders
@@ -26,7 +26,7 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from mailpile.util import *
 from platform import system
-from urllib import quote, unquote
+from urllib.parse import quote, unquote
 from datetime import datetime, timedelta
 
 from mailpile.crypto.gpgi import GnuPG

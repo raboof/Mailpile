@@ -2,7 +2,7 @@ import mailbox
 import sys
 import os
 import warnings
-import rfc822
+import email
 import time
 import errno
 
@@ -30,7 +30,7 @@ class MacMaildirMessage(mailbox.Message):
 
 
 class MacMaildir(mailbox.Mailbox):
-    def __init__(self, dirname, factory=rfc822.Message, create=True):
+    def __init__(self, dirname, factory=email.message.Message, create=True):
         mailbox.Mailbox.__init__(self, dirname, factory, create)
         if not os.path.exists(self._path):
             if create:

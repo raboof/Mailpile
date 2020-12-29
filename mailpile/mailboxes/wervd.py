@@ -1,7 +1,7 @@
 import email.generator
 import email.message
 import mailbox
-import StringIO
+from io import StringIO
 import sys
 
 import mailpile.mailboxes

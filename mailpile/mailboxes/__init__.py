@@ -9,7 +9,7 @@
 ## larger mailbox.
 
 import time
-from urllib import quote, unquote
+from urllib.parse import quote, unquote
 
 from mailpile.i18n import gettext as _
 from mailpile.i18n import ngettext as _n
@@ -32,7 +32,9 @@ class NoSuchMailboxError(OSError):
 def register(prio, cls):
     global MAILBOX_CLASSES
     MAILBOX_CLASSES.append((prio, cls))
-    MAILBOX_CLASSES.sort()
+    def takeFirst(elem):
+        return elem[0]
+    MAILBOX_CLASSES.sort(key=takeFirst)
 
 
 def IsMailbox(fn, config):

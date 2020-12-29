@@ -47,7 +47,7 @@ def CriticalConfigRule(*args):
 def ConfigPrinter(cfg, indent=''):
     rv = []
     if isinstance(cfg, dict):
-        pairer = cfg.iteritems()
+        pairer = cfg.items()
     else:
         pairer = enumerate(cfg)
     for key, val in pairer:
@@ -224,7 +224,7 @@ def RuledContainer(pcls):
         def set_rules(self, rules):
             safe_assert(isinstance(rules, dict))
             self.reset()
-            for key, rule in rules.iteritems():
+            for key, rule in rules.items():
                 self.add_rule(key, rule)
 
         def add_rule(self, key, rule):
@@ -280,8 +280,8 @@ def RuledContainer(pcls):
                 pcls.__setitem__(self, key, checker())
                 rule[self.RULE_CHECKER] = checker
 
-            elif not isinstance(value, (type(None), int, long, bool,
-                                        float, str, unicode)):
+            elif not isinstance(value, (type(None), int, bool,
+                                        float, str)):
                 raise TypeError(_('Invalid type "%s" for key "%s" (value: %s)'
                                   ) % (type(value), name, repr(value)))
 
@@ -399,7 +399,7 @@ def RuledContainer(pcls):
             if not checker is True:
                 if checker is False:
                     if isinstance(value, dict) and isinstance(self[key], dict):
-                        for k, v in value.iteritems():
+                        for k, v in value.items():
                             self[key][k] = v
                         return
                     raise ConfigValueError(_('Modifying %s/%s is not '
@@ -468,8 +468,9 @@ class ConfigList(RuledContainer(list)):
     def reset(self, rules=True, data=True):
         if rules:
             self.rules = {}
-        if data:
-            self[:] = []
+        # TODO
+        #if data:
+        #    self[:] = []
 
     def __createkey_and_setitem__(self, key, value):
         while key > len(self):
@@ -495,7 +496,7 @@ class ConfigList(RuledContainer(list)):
             value._name = '%s/%s' % (self._name, key)
 
     def __fixkey__(self, key):
-        if isinstance(key, (str, unicode)):
+        if isinstance(key, str):
             try:
                 key = int(key, 36)
             except ValueError:
@@ -518,7 +519,7 @@ class ConfigList(RuledContainer(list)):
     def iterkeys(self):
         return (self.fmt_key(i) for i in range(0, len(self)))
 
-    def iteritems(self):
+    def items(self):
         for k in self.iterkeys():
             yield (k, self[k])
 

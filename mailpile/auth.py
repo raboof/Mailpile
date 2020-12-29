@@ -1,6 +1,5 @@
 import time
-from urlparse import parse_qs, urlparse
-from urllib import quote, urlencode
+from urllib.parse import quote, urlencode, parse_qs, urlparse
 
 from mailpile.commands import Command
 from mailpile.crypto.gpgi import GnuPG

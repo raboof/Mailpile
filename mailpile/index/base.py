@@ -2,7 +2,7 @@ from __future__ import print_function
 import copy
 import json
 import random
-import rfc822
+import email
 import time
 import traceback
 

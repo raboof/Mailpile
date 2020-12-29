@@ -4,9 +4,8 @@ import email.errors
 import email.message
 import random
 import re
-import rfc822
 import time
-from urllib import quote, unquote
+from urllib.parse import quote, unquote
 
 from mailpile.i18n import gettext as _
 from mailpile.i18n import ngettext as _n

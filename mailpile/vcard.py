@@ -61,7 +61,7 @@ class VCardLine(dict):
         "\n": "\\n",
         "\r": "\\r",
     }
-    QUOTE_RMAP = dict([(v, k) for k, v in QUOTE_MAP.iteritems()])
+    QUOTE_RMAP = dict([(v, k) for k, v in QUOTE_MAP.items()])
 
     def __init__(self, line=None, name=None, value=None, **attrs):
         self._name = name and unicode(name).lower() or None

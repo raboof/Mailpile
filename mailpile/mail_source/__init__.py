@@ -2,7 +2,7 @@ import datetime
 import os
 import random
 import re
-import thread
+import _thread
 import threading
 import traceback
 import time

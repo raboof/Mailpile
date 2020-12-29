@@ -663,7 +663,9 @@ class MasterBroker(BaseConnectionBroker):
 
         """
         self.brokers.append((priority, cb(master=self)))
-        self.brokers.sort()
+        def takeFirst(elem):
+            return elem[0]
+        self.brokers.sort(key=takeFirst)
         self.brokers.reverse()
 
     def get_fd_context(self, fileno):
@@ -686,7 +688,7 @@ class MasterBroker(BaseConnectionBroker):
         if context.address is None:
             context.address = address
 
-        et = v = t = None
+        ex = None
         for prio, cb in self.brokers:
             try:
                 conn = cb.debug(self._debug).create_conn_with_caps(
@@ -699,10 +701,10 @@ class MasterBroker(BaseConnectionBroker):
                 # for debugging but don't bother the user with them.
                 pass
             except:
-                et, v, t = sys.exc_info()
-        if et is not None:
-            context.error = '%s' % v
-            raise et, v, t
+                ex = sys.exc_info()
+        if ex is not None:
+            context.error = '%s' % ex
+            raise ex
 
         context.error = _('No connection method found')
         raise CapabilityFailure(context.error)

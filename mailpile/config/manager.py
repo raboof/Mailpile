@@ -1,6 +1,6 @@
 from __future__ import print_function
 import copy
-import cPickle
+import pickle
 import io
 import jinja2
 import json
@@ -12,11 +12,11 @@ import re
 import threading
 import fasteners
 import traceback
-import ConfigParser
+from configparser import ConfigParser
 import errno
 
-from urllib import quote, unquote, getproxies
-from urlparse import urlparse
+from urllib.parse import quote, unquote, urlparse
+from urllib.request import getproxies
 
 try:
     from appdirs import AppDirs

@@ -57,7 +57,7 @@ def DetectBinaries(
                                       stderr=subprocess.PIPE)
         return p.communicate()
 
-    for binary, (bin_test, reqd) in BINARIES_WANTED.iteritems():
+    for binary, (bin_test, reqd) in BINARIES_WANTED.items():
         if binary in skip:
             continue
         if (which is None) or (binary == which):
@@ -92,7 +92,7 @@ def DetectBinaries(
         return BINARIES.get(which)
 
     elif _raise not in (None, False):
-        for binary, (bin_test, reqd) in BINARIES_WANTED.iteritems():
+        for binary, (bin_test, reqd) in BINARIES_WANTED.items():
             if binary in skip or not reqd:
                 continue
             if not BINARIES.get(binary):

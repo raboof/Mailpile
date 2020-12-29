@@ -12,7 +12,7 @@ import socket
 import subprocess
 import sys
 import traceback
-import thread
+import _thread
 import threading
 import time
 import webbrowser

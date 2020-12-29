@@ -1,13 +1,12 @@
 from __future__ import print_function
-import cStringIO
+from io import BytesIO
 import email
 import random
 import re
-import rfc822
 import time
 import threading
 import traceback
-from urllib import quote, unquote
+from urllib.parse import quote, unquote
 
 import mailpile.util
 from mailpile.crypto.gpgi import GnuPG
@@ -82,11 +81,12 @@ class MailIndex(BaseIndex):
     # a mapping from unicode ordinals to either another unicode ordinal or
     # None, to remove a character. By default it removes the ASCII control
     # characters and replaces tabs and newlines with spaces.
-    NORM_TABLE = dict([(i, None) for i in range(0, 0x20)], **{
+    NORM_TABLE = dict([(i, None) for i in range(0, 0x20)])
+    NORM_TABLE.update({
         ord(u'\t'): ord(u' '),
         ord(u'\r'): ord(u' '),
         ord(u'\n'): ord(u' '),
-        0x7F: None
+        ord(u'\u007F'): None
     })
 
     @classmethod
